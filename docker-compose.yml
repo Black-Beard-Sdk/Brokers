@@ -1,0 +1,21 @@
+# Windows full test environment with one of each middleware.
+# Only for DEV computers.
+# Everything on an internal network, with all important services NAT-ed for the developer direct usage.
+version: '3.4'
+services:
+
+  lapin:
+    image: docker.paris.pickup.local/pickup/rabbitmq:latest
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - actarus:c:/data/db/
+    environment:
+      - MEMORY_AVAILABLE=1GB
+      - DISK_FREE_LIMIT=4GB
+      - ADMIN_USER=guest
+      - ADMIN_PASS=guest
+
+volumes:
+  actarus:

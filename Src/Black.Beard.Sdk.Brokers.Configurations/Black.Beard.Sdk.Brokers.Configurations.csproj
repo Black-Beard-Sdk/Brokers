@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Bb.Sdk.Brokers</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Black.Beard.Brokers.Contracts\Black.Beard.Brokers.Contracts.csproj" />
+    <ProjectReference Include="..\Black.Beard.RabbitMq\Black.Beard.RabbitMq.csproj" />
+  </ItemGroup>
+
+</Project>
