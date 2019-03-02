@@ -3,5 +3,4 @@ solution: Black.Beard.Sdk.Brokers.sln
 mono: none
 dotnet: 2.1.502
 script:
- - dotnet restore
- - dotnet test
+ - dotnet build Black.Beard.Sdk.Brokers.sln
