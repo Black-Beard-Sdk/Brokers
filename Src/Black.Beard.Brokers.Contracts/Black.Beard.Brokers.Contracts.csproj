@@ -8,6 +8,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>Black Beard Sdk</Company>
     <Authors>Black Beard, gaelgael5@gmail.com</Authors>
+    <PackageProjectUrl>https://github.com/Black-Beard-Sdk/Brokers</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Black-Beard-Sdk/Brokers/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>
 
 </Project>
