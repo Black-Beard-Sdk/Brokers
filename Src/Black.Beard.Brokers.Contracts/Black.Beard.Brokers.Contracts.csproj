@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Bb.Brokers</RootNamespace>
+    <Description>Generics contract for manageing broker</Description>
+    <Copyright>Black beard</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Black Beard Sdk</Company>
+    <Authors>Black Beard, gaelgael5@gmail.com</Authors>
   </PropertyGroup>
 
 </Project>

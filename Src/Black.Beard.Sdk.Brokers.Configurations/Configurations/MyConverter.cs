@@ -7,7 +7,7 @@ namespace Bb.Brokers.Configurations
     /// <summary>
     /// My Converter
     /// </summary>
-    public class MyConverter
+    internal class MyConverter
     {
 
         /// <summary>

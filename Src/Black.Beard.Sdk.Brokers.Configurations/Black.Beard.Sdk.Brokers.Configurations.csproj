@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Bb.Sdk.Brokers</RootNamespace>
+    <Description>Implementation of serialization/deserialization</Description>
+    <Copyright>Black Beard</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>Black Beard Sdk</Company>
+    <Authors>Black Beard, gaelgael5@gmail.com</Authors>
   </PropertyGroup>
 
   <ItemGroup>
