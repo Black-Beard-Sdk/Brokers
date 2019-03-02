@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Black.Beard.RabbitMq.Logs\Black.Beard.RabbitMq.Logs.csproj" />
     <ProjectReference Include="..\Black.Beard.RabbitMq\Black.Beard.RabbitMq.csproj" />
     <ProjectReference Include="..\Black.Beard.Sdk.Brokers.Configurations\Black.Beard.Sdk.Brokers.Configurations.csproj" />
   </ItemGroup>

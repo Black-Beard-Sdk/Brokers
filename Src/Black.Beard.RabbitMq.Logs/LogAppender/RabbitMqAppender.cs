@@ -232,7 +232,7 @@ namespace Bb.LogAppender
                 properties.Add("Message", message);
             }
             else
-                properties = DictionnarySerializerExtension.GetDictionnaryProperties(message, true);
+                properties = TranslateObjectToDictionnarySerializerExtension.GetDictionnaryProperties(message, true);
 
             if ((TraceOutputOptions & TraceOptions.ProcessId) == TraceOptions.ProcessId)
                 properties.Add("ProcessId", Process.GetCurrentProcess().Id);

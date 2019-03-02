@@ -15,6 +15,8 @@ namespace Black.Beard.Brokers.UnitTests
         public void TestInitializer()
         {
 
+            bool result;
+
             IFactoryBroker brokers = new RabbitFactoryBrokers()
                 .Add(
                 new ServerBrokerConfiguration()
@@ -46,13 +48,18 @@ namespace Black.Beard.Brokers.UnitTests
                 }.AddRoutingKeys("ech2")
                 );
 
-            RabbitInitializer.Initialize(brokers);
+
+            brokers.Initialize(out result);
+
+            Assert.AreEqual(result, true);
 
         }
 
         [TestMethod]
         public void TestInitializerDirectShortcut()
         {
+
+            bool result;
 
             IFactoryBroker brokers = new RabbitFactoryBrokers()
             .Add(
@@ -67,7 +74,9 @@ namespace Black.Beard.Brokers.UnitTests
                 }
                 )
             .AddDirect( "server1", "publisher1", "subscriber1",  "echange1", "queueDirect")
-            .Initialize();
+            .Initialize(out result);
+
+            Assert.AreEqual(result, true);
 
         }
 

@@ -11,10 +11,10 @@ namespace Bb.Helpers
     /// <summary>
     /// object extension. convert all properies of the class in <see cref="Dictionary{string, object}"></see>/>
     /// </summary>
-    public static class DictionnarySerializerExtension
+    public static class TranslateObjectToDictionnarySerializerExtension
     {
 
-        static DictionnarySerializerExtension()
+        static TranslateObjectToDictionnarySerializerExtension()
         {
             _dic = new Dictionary<Type, Func<object, Dictionary<string, object>>>();
         }
@@ -106,12 +106,6 @@ namespace Bb.Helpers
         {
             System.Diagnostics.Contracts.Contract.Requires(!object.Equals(source, null), "null reference exception 'source'");
             var function = GetPropertiesMethod(source.GetType(), ignoreCase);
-
-            if (function == null)
-            {
-
-            }
-
             return function(source);
         }
 

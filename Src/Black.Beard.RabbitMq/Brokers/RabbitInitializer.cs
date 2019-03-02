@@ -59,7 +59,7 @@ namespace Bb.Brokers
         }
 
 
-        public static IFactoryBroker Initialize(this IFactoryBroker brokers)
+        public static IFactoryBroker Initialize(this IFactoryBroker brokers, out bool successfullInitialized)
         {
 
             foreach (string serverName in brokers.GetServerBrokerNames())
@@ -74,10 +74,11 @@ namespace Bb.Brokers
 
             }
 
+                HashSet<string> cache = new HashSet<string>();
+
             using (var subs = new SubscriptionInstances(brokers))
             {
 
-                HashSet<string> cache = new HashSet<string>();
 
                 Task callback(IBrokerContext ctx)
                 {
@@ -110,6 +111,8 @@ namespace Bb.Brokers
                     Thread.Yield();
 
             }
+
+            successfullInitialized = cache.Count == 0;
 
             return brokers;
 

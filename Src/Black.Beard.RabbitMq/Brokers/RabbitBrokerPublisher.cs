@@ -135,7 +135,7 @@ namespace Bb.Brokers
                         _headers[pair.Key] = pair.Value;
                 }
                 else
-                    _headers = DictionnarySerializerExtension.GetDictionnaryProperties(headers);
+                    _headers = TranslateObjectToDictionnarySerializerExtension.GetDictionnaryProperties(headers);
             }
 
             return _headers;
