@@ -44,16 +44,32 @@ namespace Black.Beard.Brokers.UnitTests
                     ExchangeName = "ech1",
                     StorageQueueName = "ech2",
                 }.AddRoutingKeys("ech2")
-                )
-                ;
-
-            // AddDirect( "server1", "publisher", "subscriber",  "ech1", "ech2");
+                );
 
             RabbitInitializer.Initialize(brokers);
 
         }
 
+        [TestMethod]
+        public void TestInitializerDirectShortcut()
+        {
 
+            IFactoryBroker brokers = new RabbitFactoryBrokers()
+            .Add(
+                new ServerBrokerConfiguration()
+                {
+                    Name = "server1",
+                    Hostname = "localhost",
+                    UserName = "guest",
+                    Password = "guest",
+                    Port = 5672,
+                    UseLogger = true,
+                }
+                )
+            .AddDirect( "server1", "publisher1", "subscriber1",  "echange1", "queueDirect")
+            .Initialize();
+
+        }
 
     }
 }

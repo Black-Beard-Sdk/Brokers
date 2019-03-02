@@ -1,4 +1,7 @@
 ﻿using Bb.Configurations;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bb.Brokers
@@ -45,8 +48,10 @@ namespace Bb.Brokers
                     ServerName = serverName,
                     ExchangeType = ExchangeType.DIRECT,
                     ExchangeName = exchangeName,
-                    StorageQueueName = queueName,                    
-                });
+                    StorageQueueName = queueName,
+                }.AddRoutingKeys(queueName)
+
+                );
             }
 
             return brokers;
@@ -69,23 +74,40 @@ namespace Bb.Brokers
 
             }
 
-            foreach (string publisherName in brokers.GetPublisherNames())
+            using (var subs = new SubscriptionInstances(brokers))
             {
 
-                var broker = brokers.CreatePublisher(publisherName);
+                HashSet<string> cache = new HashSet<string>();
 
-                broker.Publish("test");
+                Task callback(IBrokerContext ctx)
+                {
+                    string key = ctx.Utf8Data;
+                    if (cache.Contains(key))
+                    {
+                        cache.Remove(ctx.Utf8Data);
+                        ctx.Commit();
+                    }
+                    else
+                        ctx.Reject();
 
-            }
-            Task callback(IBrokerContext broker)
-            {
-                return Task.CompletedTask;
-            }
+                    return Task.CompletedTask;
 
-            foreach (string subscriberName in brokers.GetSubscriberNames())
-            {
+                }
 
-                var broker = brokers.CreateSubscription(subscriberName, callback);
+                foreach (string subscriberName in brokers.GetSubscriberNames())
+                    subs.AddSubscription(subscriberName, subscriberName, callback);
+
+                foreach (string publisherName in brokers.GetPublisherNames())
+                    using (var broker = brokers.CreatePublisher(publisherName))
+                    {
+                        var currentGuid = Guid.NewGuid().ToString();
+                        cache.Add(currentGuid);
+                        broker.Publish(currentGuid);
+                    }
+
+                DateTime d = DateTime.Now.AddSeconds(10);
+                while (DateTime.Now < d || cache.Count != 0)
+                    Thread.Yield();
 
             }
 

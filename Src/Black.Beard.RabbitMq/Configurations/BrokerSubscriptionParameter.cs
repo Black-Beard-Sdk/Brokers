@@ -15,14 +15,6 @@ namespace Bb.Configurations
 
         }
 
-        //public BrokerSubscriptionParameters(string connectionString)
-        //{
-        //    if (!ConnectionStringHelper.Map(this, connectionString))
-        //    {
-
-        //    }
-        //}
-
         /// <summary>
         /// The routing keys to accept (the "binding keys"). Leave empty for all. Ignored for default exchange.
         /// </summary>

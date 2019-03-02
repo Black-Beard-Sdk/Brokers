@@ -178,9 +178,20 @@ namespace Bb.Brokers
 
         }
 
+        private void DeclareQueue(IModel session)
+        {
+
+            if (!string.IsNullOrWhiteSpace(BrokerPublishParameters.ExchangeName))
+                session.ExchangeDeclare(BrokerPublishParameters.ExchangeName, BrokerPublishParameters.ExchangeType.ToString().ToLower(), true, false);
+
+            if (!string.IsNullOrWhiteSpace(BrokerPublishParameters.DefaultRountingKey))
+                // Direct exchange, default routing key => direct queue publishing, so create the queue.
+                _session.QueueDeclare(BrokerPublishParameters.DefaultRountingKey, true, false, false);
+
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Initialize()
+        public void Initialize()
         {
 
             if (!_initialized)
@@ -192,13 +203,7 @@ namespace Bb.Brokers
 
                         if (_broker.Configuration.ConfigAllowed)
                         {
-
-                            if (!string.IsNullOrWhiteSpace(BrokerPublishParameters.ExchangeName))
-                                _session.ExchangeDeclare(BrokerPublishParameters.ExchangeName, BrokerPublishParameters.ExchangeType.ToString().ToLower(), true, false);
-
-                            else if (!string.IsNullOrWhiteSpace(BrokerPublishParameters.DefaultRountingKey))
-                                // Direct exchange, default routing key => direct queue publishing, so create the queue.
-                                _session.QueueDeclare(BrokerPublishParameters.DefaultRountingKey, true, false, false);
+                            DeclareQueue(_session);
 
                         }
 

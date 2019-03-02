@@ -8,7 +8,7 @@ namespace Bb.Brokers
     public class SubscriptionInstances : IDisposable
     {
 
-        public SubscriptionInstances(RabbitFactoryBrokers borkers)
+        public SubscriptionInstances(IFactoryBroker borkers)
         {
             _brokers = borkers;
             _items = new List<SubscriptionInstance>();
@@ -34,16 +34,13 @@ namespace Bb.Brokers
         {
             if (!disposedValue)
             {
+
                 if (disposing)
-                {
                     foreach (var item in _items)
                         item.Subscription.Dispose();
-                }
-
-                // TODO: libérer les ressources non managées (objets non managés) et remplacer un finaliseur ci-dessous.
-                // TODO: définir les champs de grande taille avec la valeur Null.
 
                 disposedValue = true;
+
             }
         }
 
@@ -64,7 +61,7 @@ namespace Bb.Brokers
 
         #endregion IDisposable Support
 
-        private readonly RabbitFactoryBrokers _brokers;
+        private readonly IFactoryBroker _brokers;
         private readonly List<SubscriptionInstance> _items;
         private bool disposedValue = false; // Pour détecter les appels redondants
 

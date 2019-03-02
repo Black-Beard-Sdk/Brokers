@@ -32,5 +32,11 @@ namespace Bb.Brokers
         /// <param name="message"></param>
         /// <param name="headers"></param>
         Task Publish(object message, object headers = null);
+
+        /// <summary>
+        /// Initializes queue and echange if not existS.
+        /// </summary>
+        void Initialize();
+
     }
 }

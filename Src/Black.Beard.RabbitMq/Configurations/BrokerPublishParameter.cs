@@ -13,13 +13,6 @@ namespace Bb.Configurations
 
         }
 
-        //public BrokerPublishParameters(string connectionString)
-        //{
-        //    if (!ConnectionStringHelper.Map(this, connectionString))
-        //    {
-        //    }
-        //}
-
         /// <summary>
         /// Whether the messages published will be persistent between reboots or not.
         /// </summary>
