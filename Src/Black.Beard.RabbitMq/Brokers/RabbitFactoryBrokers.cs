@@ -19,37 +19,6 @@ namespace Bb.Brokers
 
         #region configuration
 
-        ///// <summary>
-        ///// Append a new configuration server
-        ///// </summary>
-        ///// <param name="configuration"></param>
-        //public void AddServer(string configuration)
-        //{
-        //    var server = new ServerBrokerConfiguration(configuration);
-        //    AddServer(server);
-        //}
-
-        ///// <summary>
-        ///// Append a new configuration publisher
-        ///// </summary>
-        ///// <param name="configuration"></param>
-        //public void AddPublisher(string configuration)
-        //{
-        //    var server = new BrokerPublishParameters(configuration);
-        //    AddPublisher(server);
-        //}
-
-        ///// <summary>
-        ///// Append a new configuration subscriber
-        ///// </summary>
-        ///// <param name="configuration"></param>
-        //public void AddSubscriptionBroker(string configuration)
-        //{
-        //    var server = new BrokerSubscriptionParameters(configuration);
-        //    AddSubscriptionBroker(server);
-        //}
-
-
         /// <summary>
         /// Append a new configuration
         /// </summary>
@@ -185,12 +154,12 @@ namespace Bb.Brokers
         }
 
         /// <summary>
-        /// Gets the publisher by the if exists.
+        /// Gets the publisher Configuration by the name if exists.
         /// </summary>
         /// <param name="publisherName">Name of the publisher.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public object GetPublisher(string publisherName)
+        public object GetConfigurationPublisher(string publisherName)
         {
             _brokerPublishConfigurations.TryGetValue(publisherName, out BrokerPublishParameter result);
             return result;
@@ -250,12 +219,12 @@ namespace Bb.Brokers
         }
 
         /// <summary>
-        /// Gets the subscriberName by the if exists.
+        /// Gets the subscriber Configuration by the name if exists.
         /// </summary>
         /// <param name="subscriberName">Name of the subscriber.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public object GetSubscriber(string subscriberName)
+        public object GetConfigurationSubscriber(string subscriberName)
         {
             _brokerSubscriptionConfigurations.TryGetValue(subscriberName, out BrokerSubscriptionParameter result);
             return result;
