@@ -65,7 +65,7 @@ namespace Black.Beard.Brokers.UnitTests
         public void TestDeserialize()
         {
 
-            var server = @"Name=n1;Hostname=localhost;UserName=Guest;Password=Guest;Port = 15672;UseLogger = true;ConnectionTimeoutSeconds=145".LoadServerLoadFromConnectionString();
+            var server = @"Name=n1;Hostname=localhost;UserName=Guest;Password=Guest;Port = 15672;UseLogger = true;ConnectionTimeoutSeconds=145".LoadServerFromConnectionString();
 
             Assert.AreEqual(server.Name, "n1");
             Assert.AreEqual(server.Hostname, "localhost");
@@ -82,7 +82,7 @@ namespace Black.Beard.Brokers.UnitTests
             Environment.SetEnvironmentVariable("port", "15672");
             Environment.SetEnvironmentVariable("connectionTimeoutSeconds", "145");
 
-            var server = @"Name=n1;Hostname=@host;UserName=Guest;Password=Guest;Port = @port;UseLogger = true;ConnectionTimeoutSeconds=@connectionTimeoutSeconds".LoadServerLoadFromConnectionString();
+            var server = @"Name=n1;Hostname=@host;UserName=Guest;Password=Guest;Port = @port;UseLogger = true;ConnectionTimeoutSeconds=@connectionTimeoutSeconds".LoadServerFromConnectionString();
 
             Assert.AreEqual(server.Name, "n1");
             Assert.AreEqual(server.Hostname, "test1");

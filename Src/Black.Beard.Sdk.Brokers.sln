@@ -11,7 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Black.Beard.Brokers.UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Black.Beard.Sdk.Brokers.Configurations", "Black.Beard.Sdk.Brokers.Configurations\Black.Beard.Sdk.Brokers.Configurations.csproj", "{DFB3E70D-9F84-4B15-9503-8284CF4A1D81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Black.Beard.RabbitMq.Logs", "Black.Beard.RabbitMq.Logs\Black.Beard.RabbitMq.Logs.csproj", "{01AE1516-E67D-44C3-BD6E-34DF04A4C880}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Black.Beard.RabbitMq.Logs", "Black.Beard.RabbitMq.Logs\Black.Beard.RabbitMq.Logs.csproj", "{01AE1516-E67D-44C3-BD6E-34DF04A4C880}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{70217574-6275-4F59-951F-557F2562640E}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

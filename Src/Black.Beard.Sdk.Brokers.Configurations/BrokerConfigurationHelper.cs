@@ -1,31 +1,26 @@
-﻿using Bb.Brokers;
-using Bb.Configurations;
+﻿using Bb.Configurations;
 using Bb.Exceptions;
+using Bb.Sdk.Brokers.Configurations;
 using Newtonsoft.Json;
 using System.IO;
 
-namespace Bb.Sdk.Brokers.Configurations
+namespace Bb.Brokers
 {
 
+    /// <summary>
+    /// helpers for to register configuration in <see cref="IFactoryBroker" />
+    /// </summary>
     public static class BrokerConfigurationHelper
     {
 
+        /// <summary>
+        /// Initializes the <see cref="BrokerConfigurationHelper"/> class.
+        /// </summary>
         static BrokerConfigurationHelper()
         {
-
-            BrokerConfigurationHelper._settingsToLoad = new JsonSerializerSettings()
-            {
-
-            };
-
+            BrokerConfigurationHelper._settingsToLoad = new JsonSerializerSettings() { };
             BrokerConfigurationHelper._settingsToLoad.Converters.Add(new ConvertEnvironment());
-
-            BrokerConfigurationHelper._settingsToSave = new JsonSerializerSettings()
-            {
-
-            };
-
-
+            BrokerConfigurationHelper._settingsToSave = new JsonSerializerSettings() { };
         }
 
         /// <summary>
@@ -65,21 +60,44 @@ namespace Bb.Sdk.Brokers.Configurations
         }
 
 
+
+        /// <summary>
+        /// Loads the subscriber from json.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
         public static BrokerSubscriptionParameter LoadSubscriberFromJson(this string payload)
         {
             return LoadFromJSon<BrokerSubscriptionParameter>(payload);
         }
 
+
+        /// <summary>
+        /// Loads the publisher from json.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
         public static BrokerPublishParameter LoadPublisherFromJson(this string payload)
         {
             return LoadFromJSon<BrokerPublishParameter>(payload);
         }
 
+        /// <summary>
+        /// Loads the server from json.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
         public static ServerBrokerConfiguration LoadServerFromJson(this string payload)
         {
             return LoadFromJSon<ServerBrokerConfiguration>(payload);
         }
 
+        /// <summary>
+        /// Converts configuration to json.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="self">The self.</param>
+        /// <returns></returns>
         public static string SaveToJSon<T>(this T self)
         {
             var config = Newtonsoft.Json.JsonConvert.SerializeObject(self, BrokerConfigurationHelper._settingsToSave);
@@ -94,6 +112,24 @@ namespace Bb.Sdk.Brokers.Configurations
 
 
 
+        /// <summary>
+        /// Adds the subscriber from connection string.
+        /// </summary>
+        /// <param name="self">The self.</param>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        public static IFactoryBroker AddSubscriberFromConnectionString(this IFactoryBroker self, string payload)
+        {
+            self.Add(payload.LoadSubscriberFromConnectionString());
+            return self;
+        }
+
+        /// <summary>
+        /// Loads the subscriber from connection string.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidConfigurationException">Failed to load configuration {payload}</exception>
         public static BrokerSubscriptionParameter LoadSubscriberFromConnectionString(this string payload)
         {
             var config = new BrokerSubscriptionParameter();
@@ -102,6 +138,24 @@ namespace Bb.Sdk.Brokers.Configurations
             return config;
         }
 
+        /// <summary>
+        /// Adds the publisher from connection string.
+        /// </summary>
+        /// <param name="self">The self.</param>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        public static IFactoryBroker AddPublisherFromConnectionString(this IFactoryBroker self, string payload)
+        {
+            self.Add(payload.LoadPublisherFromConnectionString());
+            return self;
+        }
+
+        /// <summary>
+        /// Loads the publisher from connection string.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidConfigurationException">Failed to load configuration {payload}</exception>
         public static BrokerPublishParameter LoadPublisherFromConnectionString(this string payload)
         {
             var config = new BrokerPublishParameter();
@@ -110,7 +164,25 @@ namespace Bb.Sdk.Brokers.Configurations
             return config;
         }
 
-        public static ServerBrokerConfiguration LoadServerLoadFromConnectionString(this string payload)
+        /// <summary>
+        /// Adds the server from connection string.
+        /// </summary>
+        /// <param name="self">The self.</param>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        public static IFactoryBroker AddServerFromConnectionString(this IFactoryBroker self, string payload)
+        {
+            self.Add(payload.LoadServerFromConnectionString());
+            return self;
+        }
+
+        /// <summary>
+        /// Loads the server from connection string.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidConfigurationException">Failed to load configuration {payload}</exception>
+        public static ServerBrokerConfiguration LoadServerFromConnectionString(this string payload)
         {
             var config = new ServerBrokerConfiguration();
             if (!LoadFromConnectionString<ServerBrokerConfiguration>(payload, config))
@@ -118,6 +190,13 @@ namespace Bb.Sdk.Brokers.Configurations
             return config;
         }
 
+        /// <summary>
+        /// Loads from connection string.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="payload">The payload.</param>
+        /// <param name="self">The self.</param>
+        /// <returns></returns>
         private static bool LoadFromConnectionString<T>(string payload, T self)
         {
             return ConnectionStringHelper.Map<T>(self, payload, false);

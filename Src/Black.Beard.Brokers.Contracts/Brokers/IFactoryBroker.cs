@@ -28,11 +28,11 @@ namespace Bb.Brokers
         Exception CheckServerBroker(string serverName);
 
         /// <summary>
-        /// Gets the publisher by the if exists.
+        /// Gets the publisher configuration by the name if exists.
         /// </summary>
         /// <param name="publisherName">Name of the publisher.</param>
         /// <returns></returns>
-        object GetPublisher(string publisherName);
+        object GetConfigurationPublisher(string publisherName);
 
         /// <summary>
         /// Create publisher from specified configuration key publisher
@@ -61,11 +61,11 @@ namespace Bb.Brokers
         string[] GetSubscriberNames();
 
         /// <summary>
-        /// Gets the subscriberName by the if exists.
+        /// Gets the subscriber configuration by the name if exists.
         /// </summary>
         /// <param name="subscriberName">Name of the subscriber.</param>
         /// <returns></returns>
-        object GetSubscriber(string subscriberName);
+        object GetConfigurationSubscriber(string subscriberName);
 
         /// <summary>
         /// Gets the regitered server names.

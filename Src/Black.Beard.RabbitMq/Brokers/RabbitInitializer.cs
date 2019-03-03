@@ -22,7 +22,7 @@ namespace Bb.Brokers
             if (e != null)
                 throw e;
 
-            BrokerPublishParameter publisher = brokers.GetPublisher(publisherName) as BrokerPublishParameter;
+            BrokerPublishParameter publisher = brokers.GetConfigurationPublisher(publisherName) as BrokerPublishParameter;
             if (publisher == null)
             {
                 brokers.Add(publisher = new BrokerPublishParameter()
@@ -39,7 +39,7 @@ namespace Bb.Brokers
 
             }
 
-            BrokerSubscriptionParameter subscriber = brokers.GetSubscriber(publisherName) as BrokerSubscriptionParameter;
+            BrokerSubscriptionParameter subscriber = brokers.GetConfigurationSubscriber(publisherName) as BrokerSubscriptionParameter;
             if (subscriber == null)
             {
                 brokers.Add(subscriber = new BrokerSubscriptionParameter()
@@ -74,11 +74,24 @@ namespace Bb.Brokers
 
             }
 
-                HashSet<string> cache = new HashSet<string>();
+            foreach (string subscriberName in brokers.GetSubscriberNames())
+            {
+                var e = brokers.CheckSubscription(subscriberName);
+                if (e != null)
+                    throw e;
+            }
+
+            foreach (string publisherName in brokers.GetPublisherNames())
+            {
+                var e = brokers.CheckPublisher(publisherName);
+                if (e != null)
+                    throw e;
+            }
+
+            HashSet<string> cache = new HashSet<string>();
 
             using (var subs = new SubscriptionInstances(brokers))
             {
-
 
                 Task callback(IBrokerContext ctx)
                 {
