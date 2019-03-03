@@ -10,8 +10,8 @@
     <Authors>Black Beard, gaelgael5@gmail.com</Authors>
     <PackageProjectUrl>https://github.com/Black-Beard-Sdk/Brokers</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Black-Beard-Sdk/Brokers/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.0.0.1</AssemblyVersion>
-    <FileVersion>1.0.0.1</FileVersion>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
   </PropertyGroup>
 
 </Project>
