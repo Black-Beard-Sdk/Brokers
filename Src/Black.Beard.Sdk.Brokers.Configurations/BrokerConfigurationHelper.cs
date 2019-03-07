@@ -133,7 +133,7 @@ namespace Bb.Brokers
         public static BrokerSubscriptionParameter LoadSubscriberFromConnectionString(this string payload)
         {
             var config = new BrokerSubscriptionParameter();
-            if (LoadFromConnectionString<BrokerSubscriptionParameter>(payload, config))
+            if (!LoadFromConnectionString<BrokerSubscriptionParameter>(payload, config))
                 throw new InvalidConfigurationException($"Failed to load configuration {payload}");
             return config;
         }

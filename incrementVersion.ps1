@@ -117,7 +117,7 @@ function InitializeType()
 
                 sb.Append(version.ToString(arr));
 
-				System.Console.WriteLine("   detected " + key + "incremented to " + version.ToString(arr));
+				System.Console.WriteLine("   detected '" + key + "' incremented to " + version.ToString(arr));
 
                 i += value.Length;
                 sb.Append(txt.Substring(i, txt.Length - i));

@@ -5,7 +5,7 @@ version: '3.4'
 services:
 
   lapin:
-    image: docker.paris.pickup.local/pickup/rabbitmq:latest
+    image: windows/rabbitmq:latest
     ports:
       - "15672:15672"
       - "5672:5672"
