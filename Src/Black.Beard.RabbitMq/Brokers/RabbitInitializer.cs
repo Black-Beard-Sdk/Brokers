@@ -60,7 +60,7 @@ namespace Bb.Brokers
         }
 
 
-        public static IFactoryBroker Initialize(this IFactoryBroker brokers, out bool successfullInitialized)
+        public static IFactoryBroker Initialize(this IFactoryBroker brokers, out bool successfullInitialized, int timeOutInSecond = 10)
         {
 
             foreach (string serverName in brokers.GetServerBrokerNames())
@@ -128,10 +128,16 @@ namespace Bb.Brokers
                         broker.Publish(currentGuid);
                     }
 
-                DateTime d = DateTime.Now.AddSeconds(10);
-                while (DateTime.Now < d || cache.Count != 0)
+                DateTime d = DateTime.Now.AddSeconds(timeOutInSecond);
+                while (cache.Count > 0)
+                {
+
                     Thread.Yield();
 
+                    if (d < DateTime.Now)
+                        break;
+
+                }
             }
 
             successfullInitialized = cache.Count == 0;
