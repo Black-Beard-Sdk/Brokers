@@ -60,7 +60,7 @@ namespace Bb.Brokers
         }
 
 
-        public static IFactoryBroker Initialize(this IFactoryBroker brokers, out bool successfullInitialized, int timeOutInSecond = 10)
+        public static IFactoryBroker Initialize(this IFactoryBroker brokers)
         {
 
             foreach (string serverName in brokers.GetServerBrokerNames())
@@ -93,6 +93,13 @@ namespace Bb.Brokers
                     throw e;
             }
 
+            return brokers;
+
+        }
+
+        public static IFactoryBroker Test(this IFactoryBroker brokers, out bool successfullInitialized, int timeOutInSecond = 10)
+        {
+
             HashSet<string> cache = new HashSet<string>();
 
             using (var subs = new SubscriptionInstances(brokers))
@@ -100,7 +107,11 @@ namespace Bb.Brokers
 
                 Task callback(IBrokerContext ctx)
                 {
+
                     string key = ctx.Utf8Data;
+
+                    Trace.WriteLine($"Depiled message {key}");
+
                     if (cache.Contains(key))
                     {
                         cache.Remove(ctx.Utf8Data);
