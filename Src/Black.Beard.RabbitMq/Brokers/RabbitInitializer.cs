@@ -1,6 +1,7 @@
 ﻿using Bb.Configurations;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -67,6 +68,7 @@ namespace Bb.Brokers
 
                 var broker = brokers.CreateServerBroker(serverName);
 
+                Trace.WriteLine($"test to connect to {serverName}");
                 if (!broker.CheckConnection())
                 {
 
@@ -76,6 +78,7 @@ namespace Bb.Brokers
 
             foreach (string subscriberName in brokers.GetSubscriberNames())
             {
+                Trace.WriteLine($"Check to subscribe {subscriberName}");
                 var e = brokers.CheckSubscription(subscriberName);
                 if (e != null)
                     throw e;
@@ -83,6 +86,8 @@ namespace Bb.Brokers
 
             foreach (string publisherName in brokers.GetPublisherNames())
             {
+                Trace.WriteLine($"Check publisher {publisherName}");
+
                 var e = brokers.CheckPublisher(publisherName);
                 if (e != null)
                     throw e;
@@ -109,11 +114,15 @@ namespace Bb.Brokers
                 }
 
                 foreach (string subscriberName in brokers.GetSubscriberNames())
+                {
+                    Trace.WriteLine($"test to subsribe {subscriberName}");
                     subs.AddSubscription(subscriberName, subscriberName, callback);
+                }
 
                 foreach (string publisherName in brokers.GetPublisherNames())
                     using (var broker = brokers.CreatePublisher(publisherName))
                     {
+                        Trace.WriteLine($"test to push test message to {publisherName}");
                         var currentGuid = Guid.NewGuid().ToString();
                         cache.Add(currentGuid);
                         broker.Publish(currentGuid);
