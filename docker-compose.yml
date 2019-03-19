@@ -4,13 +4,13 @@
 version: '3.4'
 services:
 
-  lapin:
-    image: windows/rabbitmq:latest
+  rabbit:
+    image: gaelgael5/windows.rabbit:latest
     ports:
       - "15672:15672"
       - "5672:5672"
     volumes:
-      - actarus:c:/data/db/
+      - v_rabbit:c:/data/broker/
     environment:
       - MEMORY_AVAILABLE=1GB
       - DISK_FREE_LIMIT=4GB
@@ -18,4 +18,4 @@ services:
       - ADMIN_PASS=guest
 
 volumes:
-  actarus:
+  v_rabbit:

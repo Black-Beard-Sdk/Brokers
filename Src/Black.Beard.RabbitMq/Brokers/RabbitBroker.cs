@@ -39,11 +39,20 @@ namespace Bb.Brokers
 
         private Uri GetEndpoint()
         {
+
             // Sessions (i.e. channels, i.e. IModel) are created from the connexion, but are not thread safe.
             var endPoint = Configuration.Hostname.LocalhostHandling();
-            Uri uri = new Uri($"amqp://{endPoint}:{Configuration.Port}");
+
+            Uri uri;
+            if (string.IsNullOrEmpty(Configuration.VirtualHost))
+                uri = new Uri($"amqp://{endPoint}:{Configuration.Port}");
+            else
+                uri = new Uri($"amqp://{endPoint}:{Configuration.Port}/{Configuration.VirtualHost}");
+
             return uri;
+
         }
+
 
         private void Init()
         {

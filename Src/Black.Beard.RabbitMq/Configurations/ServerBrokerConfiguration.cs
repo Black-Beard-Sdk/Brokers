@@ -1,5 +1,4 @@
-﻿using Bb.Helpers;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Bb.Configurations
@@ -26,9 +25,14 @@ namespace Bb.Configurations
         [Description("Broker hostname")]
         [Required]
         public string Hostname { get; set; }
-        
+
         [Description("Broker connection port.")]
         public int Port { get; set; }
+
+
+        [Description("Virtual host, for manage environment")]
+        public string VirtualHost { get; set; }
+
 
         /// <summary>
         /// RabbitMQ login.
