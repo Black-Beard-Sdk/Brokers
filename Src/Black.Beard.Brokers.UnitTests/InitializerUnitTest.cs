@@ -15,8 +15,6 @@ namespace Black.Beard.Brokers.UnitTests
         public void TestInitializer()
         {
 
-            bool result;
-
             IFactoryBroker brokers = new RabbitFactoryBrokers()
                 .Add(
                 new ServerBrokerConfiguration()
@@ -49,17 +47,21 @@ namespace Black.Beard.Brokers.UnitTests
                 );
 
 
-            brokers.Initialize(out result);
+            brokers.Initialize();
 
-            Assert.AreEqual(result, true);
+            Assert.IsNotNull(brokers.GetServerBrokerNames());
+            Assert.IsNotNull(brokers.GetSubscriberNames());
+            Assert.IsNotNull(brokers.GetPublisherNames());
+
+            Assert.AreEqual(1, brokers.GetServerBrokerNames().Length);
+            Assert.AreEqual(1, brokers.GetSubscriberNames().Length);
+            Assert.AreEqual(1, brokers.GetPublisherNames().Length);
 
         }
 
         [TestMethod]
         public void TestInitializerDirectShortcut()
         {
-
-            bool result;
 
             IFactoryBroker brokers = new RabbitFactoryBrokers()
             .Add(
@@ -74,9 +76,10 @@ namespace Black.Beard.Brokers.UnitTests
                 }
                 )
             .AddDirect( "server1", "publisher1", "subscriber1",  "echange1", "queueDirect")
-            .Initialize(out result);
+            .Initialize();
 
-            Assert.AreEqual(result, true);
+            Assert.IsNotNull(brokers.GetServerBrokerNames());
+            Assert.AreEqual(1, brokers.GetServerBrokerNames().Length);
 
         }
 
