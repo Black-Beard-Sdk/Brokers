@@ -52,6 +52,12 @@ namespace Bb.Brokers
         bool CanBeRequeued();
 
         /// <summary>
+        /// indicate a supervision/monitoring message
+        /// </summary>
+        /// <returns></returns>
+        bool CheckIsSupervision();
+
+        /// <summary>
         /// Will put the message back in the queue, at the start of the queue.
         /// </summary>
         void RequeueLast();

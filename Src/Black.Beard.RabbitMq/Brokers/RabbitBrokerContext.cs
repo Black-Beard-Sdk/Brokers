@@ -106,7 +106,7 @@ namespace Bb.Brokers
         /// indicate a supervision/monitoring message
         /// </summary>
         /// <returns></returns>
-        internal bool CheckIsSupervision()
+        public bool CheckIsSupervision()
         {
             const string IsSupervisionKey = "IsSupervision";
 
