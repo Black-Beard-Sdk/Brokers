@@ -149,11 +149,17 @@ namespace Bb.Brokers
 
                 Interlocked.Increment(ref _count);
 
-                await _callback(new RabbitBrokerContext(_parameters)
-                {
-                    Message = e,
-                    Session = _session
-                });
+                RabbitBrokerContext brockerContext =
+                    new RabbitBrokerContext(_parameters)
+                    {
+                        Message = e,
+                        Session = _session
+                    };
+
+                if (brockerContext.CheckIsSupervision())
+                    return;
+
+                await _callback(brockerContext);
 
                 Interlocked.Decrement(ref _count);
 

@@ -102,6 +102,32 @@ namespace Bb.Brokers
 
         }
 
+        /// <summary>
+        /// indicate a supervision/monitoring message
+        /// </summary>
+        /// <returns></returns>
+        internal bool CheckIsSupervision()
+        {
+            const string IsSupervisionKey = "IsSupervision";
+
+            bool IsSupervisionMessage =
+                Headers.Keys.Contains(IsSupervisionKey) &&
+                Headers[IsSupervisionKey].GetType() == typeof(bool) &&
+                (bool)Headers[IsSupervisionKey];
+
+            if (IsSupervisionMessage)
+            {
+                Session.BasicNack(
+                    deliveryTag: Message.DeliveryTag,
+                    multiple: false,
+                    requeue: false);
+
+                return true;
+            }
+
+            return false;
+        }
+
         public int ReplayCount
         {
             get
