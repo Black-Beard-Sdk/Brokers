@@ -18,10 +18,11 @@ namespace Bb.Brokers
         /// <summary>
         /// Register a new subscription to an existing queue (i.e. on the default exchange)
         /// </summary>
-        /// <param name="subscriptionParameters"></param>
-        /// <param name="callback"></param>
+        /// <param name="subscriptionParameters">The subscription parameters.</param>
+        /// <param name="callback">The callback that contains business code.</param>
+        /// <param name="factory">The factory is optional if you want override context. by default the value is () => new <see cref="Bb.Brokers.RabbitBrokerContext"/>()</param>
         /// <returns></returns>
-        IBrokerSubscription Subscribe(object subscriptionParameters, Func<IBrokerContext, Task> callback);
+        IBrokerSubscription Subscribe(object subscriptionParameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null);
 
         /// <summary>
         /// Get a new instance of a publisher on an exchange.

@@ -10,9 +10,16 @@ using System.Threading.Tasks;
 namespace Bb.Brokers
 {
 
+    /// <summary>
+    /// Manage a Subscription
+    /// </summary>
+    /// <seealso cref="Bb.Brokers.IBrokerSubscription" />
     internal sealed class RabbitBrokerSubscription : IBrokerSubscription
     {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RabbitBrokerSubscription"/> class.
+        /// </summary>
         public RabbitBrokerSubscription()
         {
         }
@@ -23,25 +30,29 @@ namespace Bb.Brokers
         /// <param name="broker"></param>
         /// <param name="parameters"></param>
         /// <param name="callback"></param>
-        internal void Subscribe(RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback)
+        internal void Subscribe(RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory)
         {
 
             _broker = broker;
             _parameters = parameters;
             _callback = callback;
             _watcher = parameters.WatchDog;
+            _factory = factory;
 
             CreateSession();
 
         }
 
+        /// <summary>
+        /// Creates the session.
+        /// </summary>
+        /// <exception cref="BrokerException">subscripber is allready initialized</exception>
         public void CreateSession()
         {
             if (_session != null)
                 throw new BrokerException("subscripber is allready initialized");
 
-            _session = new Session(_watcher, _broker, _parameters, _callback);
-
+            _session = new Session(Factory, _watcher, _broker, _parameters, _callback, _factory);
             _timer = new Timer(Append, null, _watcher * 1000, _watcher * 1000);
 
         }
@@ -81,16 +92,16 @@ namespace Bb.Brokers
         private class Session
         {
 
-            public Session(int watcher, RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback)
+            public Session(RabbitFactoryBrokers factory, int watcher, RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factoryContext)
             {
 
                 _nextWarnTime = RabbitClock.GetNow().AddSeconds((watcher * 2) + 1);
-
+                _factory = factory;
                 _broker = broker;
                 _parameters = parameters;
                 _callback = callback;
                 _watcher = watcher;
-
+                _factoryContext = factoryContext;
                 _callback = callback;
                 _session = broker.GetChannel();
                 _session.BasicQos(0, (ushort)parameters.MaxParallelism, false);
@@ -107,6 +118,8 @@ namespace Bb.Brokers
                     SetUpBindings(parameters, _session);
 
                 _session.BasicConsume(parameters.StorageQueueName, false, _consumer);
+
+
 
             }
 
@@ -133,7 +146,7 @@ namespace Bb.Brokers
                     while (Interlocked.Read(ref _count) > 0)
                         if (maxWait < RabbitClock.GetNow())
                         {
-                            Trace.WriteLine($"interrupt waiting closure subcriber {this._parameters.Name}");
+                            Trace.WriteLine($"interrupt waiting closure subcriber {_parameters.Name}");
                             break;
                         }
                     _session.Close();
@@ -149,13 +162,24 @@ namespace Bb.Brokers
 
                 Interlocked.Increment(ref _count);
 
-                await _callback(new RabbitBrokerContext(_parameters)
+                var context = _factoryContext();
+                if (context is IRabbitMessage message)
                 {
-                    Message = e,
-                    Session = _session
-                });
+                    message.Message = e;
+                    message.Session = _session;
+                    message.Broker = _broker;
+                    message.Factory = _factory;
+                    message.Parameters = _parameters;
+                }
 
-                Interlocked.Decrement(ref _count);
+                try
+                {
+                    await _callback(context);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _count);
+                }
 
             }
 
@@ -182,9 +206,11 @@ namespace Bb.Brokers
             private readonly Action _act;
             private readonly RabbitBroker _broker;
             private readonly BrokerSubscriptionParameter _parameters;
+            private readonly Func<IBrokerContext> _factoryContext = null;
 
             private long _count = 0;
             private DateTimeOffset _nextWarnTime;
+            private readonly RabbitFactoryBrokers _factory;
             private IModel _session;
 
         }
@@ -194,7 +220,10 @@ namespace Bb.Brokers
         private BrokerSubscriptionParameter _parameters;
         private Func<IBrokerContext, Task> _callback;
         private int _watcher;
+        private Func<IBrokerContext> _factory;
         private Timer _timer;
+
+        public RabbitFactoryBrokers Factory { get; internal set; }
 
     }
 }

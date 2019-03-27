@@ -19,6 +19,11 @@ namespace Bb.Brokers
     public sealed class RabbitBroker : IBroker
     {
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RabbitBroker"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <exception cref="InvalidOperationException">the broker is used without configuration</exception>
         public RabbitBroker(ServerBrokerConfiguration configuration)
         {
 
@@ -53,7 +58,6 @@ namespace Bb.Brokers
 
         }
 
-
         private void Init()
         {
 
@@ -81,6 +85,10 @@ namespace Bb.Brokers
 
         }
 
+        /// <summary>
+        /// Checks the broker server connection.
+        /// </summary>
+        /// <returns></returns>
         public bool CheckConnection()
         {
 
@@ -136,6 +144,11 @@ namespace Bb.Brokers
 
         }
 
+        /// <summary>
+        /// Remove all data from broker.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="IllegalStateException">cannot purge RabbitMQ broker without a management connection</exception>
         public async Task Reset()
         {
 
@@ -206,16 +219,35 @@ namespace Bb.Brokers
             }
         }
 
-        public IBrokerSubscription Subscribe(object subscriptionParameters, Func<IBrokerContext, Task> callback)
+        /// <summary>
+        /// Register a new subscription to an existing queue (i.e. on the default exchange)
+        /// </summary>
+        /// <param name="subscriptionParameters">The subscription parameters.</param>
+        /// <param name="callback">The callback that contains business code.</param>
+        /// <param name="factory">The factory is optional if you want override context. by default the value is () =&gt; new <see cref="!:Bb.Brokers.RabbitBrokerContext" />()</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidConfigurationException">subscriptionParameters must be of type BrokerSubscriptionParameters</exception>
+        public IBrokerSubscription Subscribe(object subscriptionParameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null)
         {
+
+            if (factory == null)
+                factory = () => new RabbitBrokerContext();
 
             BrokerSubscriptionParameter _subscriptionParameters = (subscriptionParameters as BrokerSubscriptionParameter) ?? throw new InvalidConfigurationException("subscriptionParameters must be of type BrokerSubscriptionParameters");
 
             var res = new RabbitBrokerSubscription();
-            res.Subscribe(this, _subscriptionParameters, callback);
+            res.Subscribe(this, _subscriptionParameters, callback, factory);
             return res;
         }
 
+        /// <summary>
+        /// Get a new instance of a publisher on an exchange.
+        /// </summary>
+        /// <param name="brokerPublishParameters"></param>
+        /// <returns>
+        /// A ready to publish publisher
+        /// </returns>
+        /// <exception cref="InvalidConfigurationException">brokerPublishParameters must be of type BrokerPublishParameters</exception>
         public IBrokerPublisher GetPublisher(object brokerPublishParameters)
         {
 
@@ -226,6 +258,9 @@ namespace Bb.Brokers
 
         }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             lock (_lock)
@@ -236,6 +271,11 @@ namespace Bb.Brokers
                 }
         }
 
+        /// <summary>
+        /// Message count in queue in internal broker. 0 if queue does not exist.
+        /// </summary>
+        /// <param name="queueName"></param>
+        /// <returns></returns>
         public Task<int> GetQueueDepth(string queueName)
         {
             using (var channel = GetChannel())

@@ -7,42 +7,42 @@ using System.Text;
 
 namespace Bb.Brokers
 {
-    public class RabbitBrokerContext : IBrokerContext
+    public class RabbitBrokerContext : IBrokerContext, IRabbitMessage
     {
 
         /// <summary>
         /// Ctor
         /// </summary>
         /// <param name="parameters"></param>
-        internal RabbitBrokerContext(BrokerSubscriptionParameter parameters)
+        public RabbitBrokerContext()
         {
-            _parameters = parameters;
+
         }
 
-        public object TransactionId => Message.DeliveryTag;
+        public object TransactionId => _message.DeliveryTag;
 
         /// <summary>
         /// Return the message from utf8. 
         /// </summary>
-        public string Utf8Data => Encoding.UTF8.GetString(Message.Body);
+        public string Utf8Data => Encoding.UTF8.GetString(_message.Body);
 
         /// <summary>
         /// The exchange the message was originally published to
         /// </summary>
-        public string Exchange => Message.Exchange;
+        public string Exchange => _message.Exchange;
 
         /// <summary>
         /// The routing key used when the message was originally published.
         /// </summary>
-        public string RoutingKey => Message.RoutingKey;
+        public string RoutingKey => _message.RoutingKey;
 
         /// <summary>
         /// A message may have headers. (can be null or empty).
         /// </summary>
         public IDictionary<string, object> Headers
         {
-            get => Message.BasicProperties.Headers;
-            set => Message.BasicProperties.Headers = value;
+            get => _message.BasicProperties.Headers;
+            set => _message.BasicProperties.Headers = value;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Bb.Brokers
         /// </summary>
         public void Commit()
         {
-            Session.BasicAck(Message.DeliveryTag, false);
+            _session.BasicAck(_message.DeliveryTag, false);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace Bb.Brokers
         /// </summary>
         public void Reject()
         {
-            Session.BasicReject(Message.DeliveryTag, false);
+            _session.BasicReject(_message.DeliveryTag, false);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Bb.Brokers
         /// </summary>
         public void Rollback()
         {
-            Session.BasicNack(Message.DeliveryTag, false, true);
+            _session.BasicNack(_message.DeliveryTag, false, true);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Bb.Brokers
         public void RequeueLast()
         {
             IncrementReplay();
-            Session.BasicPublish(Message.Exchange, Message.RoutingKey, Message.BasicProperties, Message.Body);
+            _session.BasicPublish(_message.Exchange, _message.RoutingKey, _message.BasicProperties, _message.Body);
             Commit();
 
         }
@@ -94,7 +94,7 @@ namespace Bb.Brokers
         {
 
             int count = 0;
-            if (Message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
+            if (_message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
                 if (!int.TryParse(o.ToString(), out count))
                     count = 1;
 
@@ -107,7 +107,7 @@ namespace Bb.Brokers
             get
             {
                 int count = 0;
-                if (Message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
+                if (_message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
                     if (!int.TryParse(o.ToString(), out count))
                         count = 1;
 
@@ -124,16 +124,29 @@ namespace Bb.Brokers
             if (count > _parameters.MaxReplayCount)
                 throw new MaxReplayException(_parameters.MaxReplayCount, this);
 
-            if (!Message.BasicProperties.Headers.TryAdd(_parameters.ReplayHeaderKey, count))
-                Message.BasicProperties.Headers[_parameters.ReplayHeaderKey] = count;
+            if (!_message.BasicProperties.Headers.TryAdd(_parameters.ReplayHeaderKey, count))
+                _message.BasicProperties.Headers[_parameters.ReplayHeaderKey] = count;
 
         }
 
-        internal BasicDeliverEventArgs Message { private get; set; }
-        internal IModel Session { private get; set; }
 
-        private readonly BrokerSubscriptionParameter _parameters;
 
+
+
+
+        BrokerSubscriptionParameter IRabbitMessage.Parameters { get => _parameters; set => _parameters = value; }
+        BasicDeliverEventArgs IRabbitMessage.Message { get => _message; set => _message = value; }
+        IModel IRabbitMessage.Session { get => _session; set => _session = value; }
+        IBroker IRabbitMessage.Broker { get => _broker; set => _broker = value; }
+        IFactoryBroker IRabbitMessage.Factory { get => _factory; set => _factory = value; }
+
+        private IBroker _broker;
+        private IFactoryBroker _factory;
+        private BrokerSubscriptionParameter _parameters;
+        private IModel _session;
+        private BasicDeliverEventArgs _message;
 
     }
+
+
 }

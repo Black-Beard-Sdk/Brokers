@@ -76,10 +76,11 @@ namespace Bb.Brokers
         /// <summary>
         /// Create subscriber from specified configuration key subscriber
         /// </summary>
-        /// <param name="subscriberName"></param>
-        /// <param name="callback"></param>
+        /// <param name="subscriberName">Name of the subscriber.</param>
+        /// <param name="callback">The callback that contains business code.</param>
+        /// <param name="factory">The factory is optional if you want override context. by default the value is () =&gt; new <see cref="!:Bb.Brokers.RabbitBrokerContext" />()</param>
         /// <returns></returns>
-        IBrokerSubscription CreateSubscription(string subscriberName, Func<IBrokerContext, Task> callback);
+        IBrokerSubscription CreateSubscription(string subscriberName, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null);
 
         /// <summary>
         /// Check if the configuration contains the specified subscriber key

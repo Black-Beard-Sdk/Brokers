@@ -20,9 +20,9 @@ namespace Bb.Brokers
             return subscription;
         }
 
-        public SubscriptionInstance AddSubscription(string key, string subscriberName, Func<IBrokerContext, Task> callback)
+        public SubscriptionInstance AddSubscription(string key, string subscriberName, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null)
         {
-            IBrokerSubscription subscription = _brokers.CreateSubscription(subscriberName, callback);
+            IBrokerSubscription subscription = _brokers.CreateSubscription(subscriberName, callback, factory);
             var sub = new SubscriptionInstance(key, subscription);
             _items.Add(sub);
             return sub;

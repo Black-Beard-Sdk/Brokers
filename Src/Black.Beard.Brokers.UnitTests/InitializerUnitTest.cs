@@ -49,9 +49,7 @@ namespace Black.Beard.Brokers.UnitTests
                 );
 
 
-            brokers.Initialize(out result);
-
-            Assert.AreEqual(result, true);
+            brokers.Initialize();
 
         }
 
@@ -74,10 +72,8 @@ namespace Black.Beard.Brokers.UnitTests
                 }
                 )
             .AddDirect( "server1", "publisher1", "subscriber1",  "echange1", "queueDirect")
-            .Initialize(out result);
-
-            Assert.AreEqual(result, true);
-
+            .Initialize();
+          
         }
 
     }

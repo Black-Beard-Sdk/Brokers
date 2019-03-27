@@ -175,7 +175,7 @@ namespace Bb.Brokers
         /// <param name="subscriberName"></param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public IBrokerSubscription CreateSubscription(string subscriberName, Func<IBrokerContext, Task> callback)
+        public IBrokerSubscription CreateSubscription(string subscriberName, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null)
         {
 
             if (!_brokerSubscriptionConfigurations.TryGetValue(subscriberName, out BrokerSubscriptionParameter subscriberParameter))
@@ -185,9 +185,9 @@ namespace Bb.Brokers
                 throw new Exceptions.InvalidConfigurationException($"configuration server {subscriberParameter.ServerName}");
 
             IBroker _broker = new RabbitBroker(server);
-            var _Subscriber = _broker.Subscribe(subscriberParameter, callback);
-
-            return _Subscriber;
+            var subscriber = (RabbitBrokerSubscription)_broker.Subscribe(subscriberParameter, callback, factory);
+            subscriber.Factory = this;
+            return subscriber;
 
         }
 
