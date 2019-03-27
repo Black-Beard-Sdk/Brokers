@@ -216,6 +216,8 @@ namespace Bb.Brokers
 
         }
 
+        public IBroker Broker => _broker;
+
         private readonly RabbitBroker _broker;
         private IModel _session;
         private bool _initialized = false;

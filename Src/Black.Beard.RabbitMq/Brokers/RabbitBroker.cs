@@ -297,6 +297,8 @@ namespace Bb.Brokers
         /// </summary>
         public ServerBrokerConfiguration Configuration { get; private set; }
 
+        public IFactoryBroker Factory { get; internal set; }
+
         ///// <summary>
         ///// If true, all queues will be purged on startup. Only used in tests.
         ///// </summary>

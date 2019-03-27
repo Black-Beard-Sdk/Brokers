@@ -61,5 +61,7 @@ namespace Bb.Brokers
         /// </summary>
         void Rollback();
 
+        IBroker Broker { get; }
+
     }
 }

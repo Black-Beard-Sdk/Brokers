@@ -58,5 +58,7 @@ namespace Bb.Brokers
         ///// <param name="exchangeName"></param>
         //void BindTopic(string queueName, string exchangeName);
 
+        IFactoryBroker Factory { get; }
+
     }
 }

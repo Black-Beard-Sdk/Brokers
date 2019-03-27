@@ -135,13 +135,16 @@ namespace Bb.Brokers
 
 
         BrokerSubscriptionParameter IRabbitMessage.Parameters { get => _parameters; set => _parameters = value; }
+
         BasicDeliverEventArgs IRabbitMessage.Message { get => _message; set => _message = value; }
+
         IModel IRabbitMessage.Session { get => _session; set => _session = value; }
-        IBroker IRabbitMessage.Broker { get => _broker; set => _broker = value; }
-        IFactoryBroker IRabbitMessage.Factory { get => _factory; set => _factory = value; }
+
+        IBroker IRabbitMessage.Broker { get => _broker; set => _broker= value; }
+
+        public IBroker Broker => _broker; 
 
         private IBroker _broker;
-        private IFactoryBroker _factory;
         private BrokerSubscriptionParameter _parameters;
         private IModel _session;
         private BasicDeliverEventArgs _message;

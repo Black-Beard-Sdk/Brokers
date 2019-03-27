@@ -12,6 +12,7 @@ namespace Bb.Brokers
 
         public RabbitFactoryBrokers()
         {
+            BrokerContextFactory = () => new RabbitBrokerContext();
             _serverConfigurations = new Dictionary<string, ServerBrokerConfiguration>();
             _brokerPublishConfigurations = new Dictionary<string, BrokerPublishParameter>();
             _brokerSubscriptionConfigurations = new Dictionary<string, BrokerSubscriptionParameter>();
@@ -71,7 +72,7 @@ namespace Bb.Brokers
             if (!_serverConfigurations.TryGetValue(serverName, out ServerBrokerConfiguration server))
                 throw new Exceptions.InvalidConfigurationException($"configuration server {serverName}");
 
-            var _broker = new RabbitBroker(server);
+            var _broker = new RabbitBroker(server) { Factory = this };
 
             return _broker;
 
@@ -119,7 +120,7 @@ namespace Bb.Brokers
             if (!_serverConfigurations.TryGetValue(publisher.ServerName, out ServerBrokerConfiguration server))
                 throw new Exceptions.InvalidConfigurationException($"configuration server {publisher.ServerName}");
 
-            var _broker = new RabbitBroker(server);
+            var _broker = new RabbitBroker(server) { Factory = this };
             var _publisher = _broker.GetPublisher(publisher);
 
             return _publisher;
@@ -167,6 +168,8 @@ namespace Bb.Brokers
 
         #endregion Publishers
 
+        public Func<IBrokerContext> BrokerContextFactory { get; set; }
+
         #region subscribers
 
         /// <summary>
@@ -178,15 +181,17 @@ namespace Bb.Brokers
         public IBrokerSubscription CreateSubscription(string subscriberName, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factory = null)
         {
 
+            if (factory == null)
+                factory = BrokerContextFactory;
+
             if (!_brokerSubscriptionConfigurations.TryGetValue(subscriberName, out BrokerSubscriptionParameter subscriberParameter))
                 throw new Exceptions.InvalidConfigurationException($"configuration subscription {subscriberName}");
 
             if (!_serverConfigurations.TryGetValue(subscriberParameter.ServerName, out ServerBrokerConfiguration server))
                 throw new Exceptions.InvalidConfigurationException($"configuration server {subscriberParameter.ServerName}");
 
-            IBroker _broker = new RabbitBroker(server);
+            IBroker _broker = new RabbitBroker(server) { Factory = this };
             var subscriber = (RabbitBrokerSubscription)_broker.Subscribe(subscriberParameter, callback, factory);
-            subscriber.Factory = this;
             return subscriber;
 
         }

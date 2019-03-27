@@ -15,8 +15,6 @@ namespace Black.Beard.Brokers.UnitTests
         public void TestInitializer()
         {
 
-            bool result;
-
             IFactoryBroker brokers = new RabbitFactoryBrokers()
                 .Add(
                 new ServerBrokerConfiguration()
@@ -56,8 +54,6 @@ namespace Black.Beard.Brokers.UnitTests
         [TestMethod]
         public void TestInitializerDirectShortcut()
         {
-
-            bool result;
 
             IFactoryBroker brokers = new RabbitFactoryBrokers()
             .Add(

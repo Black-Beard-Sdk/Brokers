@@ -44,6 +44,14 @@ namespace Bb.Brokers
         }
 
         /// <summary>
+        /// Gets the broker that create current subscription
+        /// </summary>
+        /// <value>
+        /// The broker.
+        /// </value>
+        public IBroker Broker => this._broker;
+
+        /// <summary>
         /// Creates the session.
         /// </summary>
         /// <exception cref="BrokerException">subscripber is allready initialized</exception>
@@ -52,7 +60,7 @@ namespace Bb.Brokers
             if (_session != null)
                 throw new BrokerException("subscripber is allready initialized");
 
-            _session = new Session(Factory, _watcher, _broker, _parameters, _callback, _factory);
+            _session = new Session(_watcher, _broker, _parameters, _callback, _factory);
             _timer = new Timer(Append, null, _watcher * 1000, _watcher * 1000);
 
         }
@@ -92,11 +100,10 @@ namespace Bb.Brokers
         private class Session
         {
 
-            public Session(RabbitFactoryBrokers factory, int watcher, RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factoryContext)
+            public Session(int watcher, RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factoryContext)
             {
 
                 _nextWarnTime = RabbitClock.GetNow().AddSeconds((watcher * 2) + 1);
-                _factory = factory;
                 _broker = broker;
                 _parameters = parameters;
                 _callback = callback;
@@ -118,8 +125,6 @@ namespace Bb.Brokers
                     SetUpBindings(parameters, _session);
 
                 _session.BasicConsume(parameters.StorageQueueName, false, _consumer);
-
-
 
             }
 
@@ -168,7 +173,6 @@ namespace Bb.Brokers
                     message.Message = e;
                     message.Session = _session;
                     message.Broker = _broker;
-                    message.Factory = _factory;
                     message.Parameters = _parameters;
                 }
 
@@ -210,7 +214,6 @@ namespace Bb.Brokers
 
             private long _count = 0;
             private DateTimeOffset _nextWarnTime;
-            private readonly RabbitFactoryBrokers _factory;
             private IModel _session;
 
         }
@@ -222,8 +225,6 @@ namespace Bb.Brokers
         private int _watcher;
         private Func<IBrokerContext> _factory;
         private Timer _timer;
-
-        public RabbitFactoryBrokers Factory { get; internal set; }
 
     }
 }

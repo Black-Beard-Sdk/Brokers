@@ -13,8 +13,6 @@ namespace Bb.Brokers
 
         IBroker Broker { get; set; }
 
-        IFactoryBroker Factory { get; set; }
-
         BrokerSubscriptionParameter Parameters { get; set; }
 
     }

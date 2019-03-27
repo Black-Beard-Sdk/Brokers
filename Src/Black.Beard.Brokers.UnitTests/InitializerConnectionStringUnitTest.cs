@@ -49,6 +49,10 @@ namespace Black.Beard.Brokers.UnitTests
 
                 Task callback(IBrokerContext ctx)
                 {
+
+                    Assert.AreEqual(ctx.Broker != null, true);
+                    Assert.AreEqual(ctx.Broker.Factory != null, true);
+
                     ctx.Commit();
                     //ctx.Reject();
                     return Task.CompletedTask;

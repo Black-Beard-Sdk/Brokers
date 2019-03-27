@@ -8,5 +8,14 @@ namespace Bb.Brokers
     /// </summary>
     public interface IBrokerSubscription : IDisposable
     {
+
+        /// <summary>
+        /// Gets the broker that create current subscription
+        /// </summary>
+        /// <value>
+        /// The broker.
+        /// </value>
+        IBroker Broker { get; }
+
     }
 }

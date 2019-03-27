@@ -38,5 +38,13 @@ namespace Bb.Brokers
         /// </summary>
         void Initialize();
 
+        /// <summary>
+        /// Gets the broker that create current publisher.
+        /// </summary>
+        /// <value>
+        /// The broker.
+        /// </value>
+        IBroker Broker { get; }
+
     }
 }
