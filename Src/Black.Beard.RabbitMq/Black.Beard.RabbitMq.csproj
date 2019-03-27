@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;net451</TargetFrameworks>
     <RootNamespace>Bb</RootNamespace>
     <Description>Implementation of generic broker in rabbitMQ</Description>
     <Copyright>Black Beard</Copyright>
