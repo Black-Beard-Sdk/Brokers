@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Bb</RootNamespace>
     <Description>Implementation of generic broker in rabbitMQ</Description>
     <Copyright>Black Beard</Copyright>
@@ -31,7 +31,9 @@
   <ItemGroup>
     <PackageReference Include="EasyNetQ" Version="3.3.9" />
     <PackageReference Include="EasyNetQ.Management.Client" Version="1.1.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

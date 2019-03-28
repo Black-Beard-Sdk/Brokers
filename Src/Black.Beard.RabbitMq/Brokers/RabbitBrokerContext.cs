@@ -124,9 +124,10 @@ namespace Bb.Brokers
             if (count > _parameters.MaxReplayCount)
                 throw new MaxReplayException(_parameters.MaxReplayCount, this);
 
-            if (!_message.BasicProperties.Headers.TryAdd(_parameters.ReplayHeaderKey, count))
+            if (_message.BasicProperties.Headers.ContainsKey(_parameters.ReplayHeaderKey))
                 _message.BasicProperties.Headers[_parameters.ReplayHeaderKey] = count;
-
+            else
+                _message.BasicProperties.Headers.Add(_parameters.ReplayHeaderKey, count);
         }
 
 

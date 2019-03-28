@@ -67,7 +67,7 @@ namespace Bb.Sdk.Brokers.Configurations
                 var ii = item.Split('=');
 
                 var key = ii[0];
-                var valueText = string.Join('=', ii.Skip(1));
+                var valueText = string.Join("=", ii.Skip(1));
 
                 if (valueText.StartsWith("@"))
                 {
@@ -101,7 +101,7 @@ namespace Bb.Sdk.Brokers.Configurations
 
                 var ii = item.Split('=');
                 var key = ii[0].Trim();
-                var valueText = string.Join('=', ii.Skip(1));
+                var valueText = string.Join("=", ii.Skip(1));
                 if (string.IsNullOrEmpty(valueText))
                     continue;
 
