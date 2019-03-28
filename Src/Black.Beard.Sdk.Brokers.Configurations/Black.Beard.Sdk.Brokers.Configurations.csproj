@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;net45</TargetFrameworks>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Bb.Sdk.Brokers</RootNamespace>
     <Description>Implementation of serialization/deserialization</Description>
     <Copyright>Black Beard</Copyright>
