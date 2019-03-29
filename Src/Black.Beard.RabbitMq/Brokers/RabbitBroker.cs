@@ -39,7 +39,16 @@ namespace Bb.Brokers
         internal IModel GetChannel()
         {
             Init();
-            return _connection.CreateModel();
+            var result = _connection.CreateModel();
+            try
+            {
+                RabbitInterceptor.Instance?.InitializeSessionRun(this, result);
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.Message);
+            }
+            return result;
         }
 
         private Uri GetEndpoint()
@@ -67,10 +76,11 @@ namespace Bb.Brokers
                     {
 
                         _connection = CreateConnection();
-
+                        IModel channel = null;
                         try
                         {
-                            using (var channel = GetChannel()) { }    // Test connection
+
+                            channel = GetChannel(); // Test connection
                         }
                         catch (Exception e)
                         {
@@ -79,6 +89,22 @@ namespace Bb.Brokers
                                 System.Diagnostics.Debugger.Break();
 
                             throw;
+                        }
+                        finally
+                        {
+                            if (channel != null)
+                            {
+                                try
+                                {
+                                    RabbitInterceptor.Instance?.DisposeSessionRun(this, channel);
+                                }
+                                catch (Exception e)
+                                {
+                                    Trace.WriteLine(e.Message);
+                                }
+
+                                channel.Dispose();
+                            }
                         }
 
                     }
@@ -166,7 +192,9 @@ namespace Bb.Brokers
 
         private IConnection CreateConnectionWithTimeout(ConnectionFactory rabbitMqFactory)
         {
+
             IConnection connection = null;
+
             if (Configuration.UseLogger)
                 Trace.WriteLine($"Attempting to connect to RabbitMQ with connectionString: {rabbitMqFactory.Uri}", TraceLevel.Info.ToString());
 
@@ -211,7 +239,18 @@ namespace Bb.Brokers
                 if (Configuration.UseLogger)
                     Trace.WriteLine("Successfully connected to RabbitMQ", TraceLevel.Info.ToString());
 
+
+                try
+                {
+                    RabbitInterceptor.Instance?.InitializeConnectionRun(this, connection);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e.Message);
+                }
+
                 return connection;
+
             }
             else
             {
@@ -263,12 +302,25 @@ namespace Bb.Brokers
         /// </summary>
         public void Dispose()
         {
-            lock (_lock)
-                if (_connection != null)
-                {
-                    _connection?.Close();
-                    _connection = null;
-                }
+            if (_connection != null)
+                lock (_lock)
+                    if (_connection != null)
+                    {
+
+                        try
+                        {
+                            RabbitInterceptor.Instance?.DisposeConnectionRun(this, _connection);
+                        }
+                        catch (Exception e)
+                        {
+                            Trace.WriteLine(e.Message);
+
+                        }
+
+                        _connection.Dispose();
+                        _connection.Close();
+                        _connection = null;
+                    }
         }
 
         /// <summary>
@@ -278,8 +330,13 @@ namespace Bb.Brokers
         /// <returns></returns>
         public Task<int> GetQueueDepth(string queueName)
         {
-            using (var channel = GetChannel())
+
+            IModel channel = null;
+
+            try
             {
+                channel = GetChannel();
+
                 try
                 {
                     return Task.FromResult((int)channel.MessageCount(queueName));
@@ -287,6 +344,18 @@ namespace Bb.Brokers
                 catch (Exception)
                 {
                     return Task.FromResult(0);
+                }
+
+            }
+            finally
+            {
+                try
+                {
+                    RabbitInterceptor.Instance?.InitializeSessionRun(this, channel);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e.Message);
                 }
             }
         }

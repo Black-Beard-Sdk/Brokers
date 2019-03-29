@@ -35,11 +35,12 @@ namespace Bb.Brokers
             if (!disposedValue)
             {
 
+                disposedValue = true;
+
                 if (disposing)
                     foreach (var item in _items)
                         item.Subscription.Dispose();
 
-                disposedValue = true;
 
             }
         }

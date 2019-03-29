@@ -49,7 +49,7 @@ namespace Bb.Brokers
         /// <value>
         /// The broker.
         /// </value>
-        public IBroker Broker => this._broker;
+        public IBroker Broker => _broker;
 
         /// <summary>
         /// Creates the session.
@@ -97,7 +97,7 @@ namespace Bb.Brokers
             _timer = null;
         }
 
-        private class Session
+        private class Session : IDisposable
         {
 
             public Session(int watcher, RabbitBroker broker, BrokerSubscriptionParameter parameters, Func<IBrokerContext, Task> callback, Func<IBrokerContext> factoryContext)
@@ -120,6 +120,7 @@ namespace Bb.Brokers
                 {
                     _consumer.Received -= _consumer_Received;
                 };
+
 
                 if (broker.Configuration.ConfigAllowed)
                     SetUpBindings(parameters, _session);
@@ -154,6 +155,16 @@ namespace Bb.Brokers
                             Trace.WriteLine($"interrupt waiting closure subcriber {_parameters.Name}");
                             break;
                         }
+
+                    try
+                    {
+                        RabbitInterceptor.Instance?.DisposeSessionRun(_broker, _session);
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.WriteLine(e.Message);
+                    }
+
                     _session.Close();
                     _session = null;
                 }

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -92,9 +93,22 @@ namespace Bb.Brokers
                 _session?.TxRollback();
                 _txOpen = false;
             }
-            _session?.Close();
-            _session?.Dispose();
-            _session = null;
+
+            if (_session != null)
+            {
+                try
+                {
+                    RabbitInterceptor.Instance?.DisposeSessionRun(this.Broker, _session);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e.Message);
+                }
+
+                _session?.Close();
+                _session?.Dispose();
+                _session = null;
+            }
             _initialized = false;
         }
 
