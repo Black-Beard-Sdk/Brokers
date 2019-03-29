@@ -52,62 +52,20 @@ Sdk for using broker (implementation on rabbitMQ)
 ```CSharp
 
 
-        public class RabbitInterceptorSub : RabbitInterceptor
+        RabbitInterceptor.Instance = new RabbitInterceptor()
         {
 
-            /// <summary>
-            /// Initializes the connection.
-            /// </summary>
-            /// <param name="connection">The connection.</param>
-            public override void InitializeConnection(IConnection connection)
+            InitializeConnection = (broker, connection) =>
             {
-                connection.CallbackException += Connection_CallbackException;
-                connection.ConnectionBlocked += Connection_ConnectionBlocked;
-            }
 
-            /// <summary>
-            /// Disposes the connection.
-            /// </summary>
-            /// <param name="connection">The connection.</param>
-            public override void DisposeConnection(IConnection connection)
-            {
-                connection.CallbackException += Connection_CallbackException;
-                connection.ConnectionBlocked += Connection_ConnectionBlocked;
-            }
+            },
 
-            /// <summary>
-            /// Initializes the session.
-            /// </summary>
-            /// <param name="result">The result.</param>
-            public override void InitializeSession(IModel result)
+            DisposeConnection = (broker, connection) =>
             {
 
             }
 
-            /// <summary>
-            /// Disposes the session.
-            /// </summary>
-            /// <param name="session">The session.</param>
-            public override void DisposeSession(IModel session)
-            {
-
-            }
-
-
-            private void Connection_ConnectionBlocked(object sender, RabbitMQ.Client.Events.ConnectionBlockedEventArgs e)
-            {
-
-            }
-
-            private void Connection_CallbackException(object sender, RabbitMQ.Client.Events.CallbackExceptionEventArgs e)
-            {
-
-            }
-
-
-        }
-
-        RabbitInterceptor.Instance = new RabbitInterceptorSub();
+        };
 
 
 ```
