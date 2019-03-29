@@ -27,5 +27,11 @@ namespace Bb.Configurations
         [Required]
         public string ServerName { get; set; }
 
+        /// <summary>
+        /// Expiration message.
+        /// </summary>
+        [Description("Expiration message")]
+        public string ExpirationMessage { get; set; }
+
     }
 }

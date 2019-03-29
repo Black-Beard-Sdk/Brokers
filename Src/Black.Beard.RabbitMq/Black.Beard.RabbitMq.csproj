@@ -25,7 +25,6 @@
   <ItemGroup>
     <Compile Remove="Helpers\ConnectionStringHelper.cs" />
     <Compile Remove="Helpers\MyConverter.cs" />
-    <Compile Remove="Helpers\PropertyHelper.cs" />
   </ItemGroup>
 
   <ItemGroup>

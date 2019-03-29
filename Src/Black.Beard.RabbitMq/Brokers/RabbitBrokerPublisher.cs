@@ -39,8 +39,10 @@ namespace Bb.Brokers
 
             string _queue = BrokerPublishParameters.DefaultRountingKey ?? throw new NullReferenceException($"parameter '{nameof(BrokerPublishParameters.DefaultRountingKey)}' is missing or empty");
 
-            var h = TranslateHeaders(headers);
-            return Publish_Impl(_queue, message, h);
+            var header = TranslateHeaders(headers);
+
+            return Publish_Impl(_queue, message, header);
+
         }
 
         /// <summary>
@@ -98,7 +100,7 @@ namespace Bb.Brokers
             {
                 try
                 {
-                    RabbitInterceptor.Instance?.DisposeSessionRun(this.Broker, _session);
+                    RabbitInterceptor.Instance?.DisposeSessionRun(Broker, _session);
                 }
                 catch (Exception e)
                 {
@@ -182,6 +184,10 @@ namespace Bb.Brokers
             // Deliver to exchange
             var props = _session.CreateBasicProperties();
             props.DeliveryMode = (byte)BrokerPublishParameters.DeliveryMode;
+
+            if (!string.IsNullOrEmpty(BrokerPublishParameters.ExpirationMessage))
+                props.Expiration = BrokerPublishParameters.ExpirationMessage;
+
             if (headers != null)
                 props.Headers = headers;
 
