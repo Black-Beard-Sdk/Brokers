@@ -144,10 +144,16 @@ namespace Bb.Brokers
 
             if (headers != null)
             {
-                if (headers is IDictionary<string, object> d)
+                if (headers is IDictionary<string, string> d1)
                 {
-                    _headers = new Dictionary<string, object>(d.Count);
-                    foreach (var pair in d)
+                    _headers = new Dictionary<string, object>(d1.Count);
+                    foreach (var pair in d1)
+                        _headers[pair.Key] = pair.Value;
+                }
+                else if (headers is IDictionary<string, object> d2)
+                {
+                    _headers = new Dictionary<string, object>(d2.Count);
+                    foreach (var pair in d2)
                         _headers[pair.Key] = pair.Value;
                 }
                 else
