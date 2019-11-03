@@ -39,7 +39,7 @@ namespace Black.Beard.Brokers.UnitTests
         {
 
             IFactoryBroker brokers = new RabbitFactoryBrokers()
-            .AddServerFromConnectionString("Name=server1;Hostname=localhost;UserName=guest;Password=guest;Port=5672;UseLogger=true")
+            .AddServerFromConnectionString("Name=server1;Hostname=localhost;UserName=gael;Password=gael;Port=5672;UseLogger=true")
             .AddPublisherFromConnectionString("Name=publisher1;ServerName=server1;ExchangeType=DIRECT;ExchangeName=ech1;DefaultRountingKey=ech2")
             .AddSubscriberFromConnectionString("Name=subscriber37;ServerName = server1;ExchangeType=DIRECT;ExchangeName=ech1;StorageQueueName=ech2")
             .Initialize();
@@ -54,6 +54,9 @@ namespace Black.Beard.Brokers.UnitTests
                     count++;
                     Assert.AreEqual(ctx.Broker != null, true);
                     Assert.AreEqual(ctx.Broker.Factory != null, true);
+                    Assert.AreEqual(ctx.Utf8Data != null, true);
+
+
 
                     ctx.Commit();
                     //ctx.Reject();

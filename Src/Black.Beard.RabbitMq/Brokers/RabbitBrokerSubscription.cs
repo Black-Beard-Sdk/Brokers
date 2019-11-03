@@ -178,13 +178,14 @@ namespace Bb.Brokers
 
                 Interlocked.Increment(ref _count);
 
-                var context = _factoryContext();
+                IBrokerContext context = _factoryContext();
+
                 if (context is IRabbitMessage message)
                 {
+                    message.Parameters = _parameters;
+                    message.Broker = _broker;
                     message.Message = e;
                     message.Session = _session;
-                    message.Broker = _broker;
-                    message.Parameters = _parameters;
                 }
 
                 try
