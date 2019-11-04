@@ -61,6 +61,8 @@ namespace Bb.Brokers
         /// </summary>
         void Rollback();
 
+        Dictionary<string, object> CloneHeaders();
+
         IBroker Broker { get; }
 
     }

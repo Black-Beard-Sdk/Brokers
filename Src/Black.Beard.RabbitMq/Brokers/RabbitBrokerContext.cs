@@ -77,29 +77,15 @@ namespace Bb.Brokers
             IncrementReplay();
             _session.BasicPublish(_message.Exchange, _message.RoutingKey, _message.BasicProperties, _message.Body);
             Commit();
-
         }
 
-        ///// <summary>
-        ///// How many times the message may be requeued before being labeled a poison message. -1 to disable.
-        ///// </summary>
-        //public int MaxReplayCount => _parameters.MaxReplayCount;
-
-        ///// <summary>
-        ///// The header used for the poison message mechanism. By default the value is "REPLAY"
-        ///// </summary>
-        //public string ReplayHeaderKey => _parameters.ReplayHeaderKey;
-
+        /// <summary>
+        /// return true if the message can be technical requeued
+        /// </summary>
+        /// <returns></returns>
         public bool CanBeRequeued()
         {
-
-            int count = 0;
-            if (_message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
-                if (!int.TryParse(o.ToString(), out count))
-                    count = 1;
-
-            return count < _parameters.MaxReplayCount;
-
+            return ReplayCount < _parameters.MaxReplayCount;
         }
 
         public int ReplayCount
@@ -107,9 +93,12 @@ namespace Bb.Brokers
             get
             {
                 int count = 0;
-                if (_message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object o))
-                    if (!int.TryParse(o.ToString(), out count))
+                if (_message.BasicProperties.Headers.TryGetValue(_parameters.ReplayHeaderKey, out object header))
+                {
+                    var _countString = System.Text.Encoding.UTF8.GetString((byte[])header);
+                    if (!int.TryParse(_countString, out count))
                         count = 1;
+                }
 
                 return count;
             }
@@ -130,7 +119,17 @@ namespace Bb.Brokers
         }
 
 
+        public Dictionary<string, object> CloneHeaders()
+        {
 
+            Dictionary<string, object> _headers = new Dictionary<string, object>();
+
+            foreach (var header in this.Headers)
+                _headers.Add(header.Key, Encoding.ASCII.GetString((byte[])header.Value));
+
+            return _headers;
+
+        }
 
 
 
@@ -140,9 +139,9 @@ namespace Bb.Brokers
 
         IModel IRabbitMessage.Session { get => _session; set => _session = value; }
 
-        IBroker IRabbitMessage.Broker { get => _broker; set => _broker= value; }
+        IBroker IRabbitMessage.Broker { get => _broker; set => _broker = value; }
 
-        public IBroker Broker => _broker; 
+        public IBroker Broker => _broker;
 
         private IBroker _broker;
         private BrokerSubscriptionParameter _parameters;

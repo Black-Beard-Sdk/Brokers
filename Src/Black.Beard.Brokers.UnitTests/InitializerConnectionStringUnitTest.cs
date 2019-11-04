@@ -67,15 +67,12 @@ namespace Black.Beard.Brokers.UnitTests
                 // Add a subscriber
                 subs.AddSubscription("sub1", "subscriber37", callback);
 
-                var headers = new Dictionary<string, string>();
-                headers.Add("domain", "test");
-
                 // push message in transaction
                 var publisher = brokers.CreatePublisher("publisher1");
                 using (publisher.BeginTransaction())
                 {
                     publisher.Publish(new { uui = Guid.NewGuid() });
-                    publisher.Publish("ech2", new { uui = Guid.NewGuid() }, headers);
+                    publisher.Publish("ech2", new { uui = Guid.NewGuid() }, new { domain = "test" });
                     publisher.Commit();
                 }
 

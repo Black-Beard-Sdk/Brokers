@@ -17,5 +17,7 @@ namespace Bb.Brokers
         /// </value>
         IBroker Broker { get; }
 
+        void Close();
+
     }
 }
